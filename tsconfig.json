@@ -1,5 +1,4 @@
 {
-  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "target": "ES2017",
     "lib": [
@@ -36,6 +35,12 @@
     ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "api",
+    "packages",
+    "supplier-portal",
+    "infra",
+    "workflows",
+    "web"
   ]
 }

@@ -15,7 +15,7 @@ interface RfqItemRowProps {
 
 export function RfqItemRow({ index, register, errors, onRemove, canRemove, showLabels }: RfqItemRowProps) {
   const inp = 'w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563a8]/30';
-  const err = errors?.items?.[index];
+  const err = (errors?.items as any)?.[index];
 
   return (
     <div className="grid grid-cols-12 gap-2 items-start">

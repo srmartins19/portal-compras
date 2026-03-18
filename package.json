@@ -1,6 +1,12 @@
 {
   "name": "bidflow-web",
   "version": "1.0.0",
+  "private": true,
+  "packageManager": "npm@10.9.4",
+  "workspaces": [
+    "packages/*",
+    "supplier-portal"
+  ],
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build",
@@ -27,6 +33,7 @@
     "react-hook-form": "^7.52.0",
     "recharts": "^2.12.7",
     "tailwind-merge": "^2.3.0",
+    "tailwindcss-animate": "^1.0.7",
     "zod": "^3.23.8",
     "zustand": "^4.5.2"
   },
@@ -37,6 +44,7 @@
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.4",
+    "turbo": "^2.8.18",
     "typescript": "^5.4.5"
   }
 }
