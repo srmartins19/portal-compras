@@ -52,10 +52,11 @@ export const ordersApi = {
 };
 
 export const analyticsApi = {
-  dashboard:    ()                => api.get('/analytics/dashboard'),
-  priceHistory: (itemId: string)  => api.get(`/analytics/item-price-history/${itemId}`),
-  ranking:      ()                => api.get('/analytics/supplier-ranking'),
-  monthly:      (months?: number) => api.get('/analytics/monthly', { params: { months } }),
+  dashboard:                ()                => api.get('/analytics/dashboard'),
+  priceHistory:             (itemId: string)  => api.get(`/analytics/item-price-history/${itemId}`),
+  ranking:                  ()                => api.get('/analytics/supplier-ranking'),
+  monthly:                  (months?: number) => api.get('/analytics/monthly', { params: { months } }),
+  getSupplierParticipation: ()                => api.get('/analytics/supplier-participation'),
 };
 
 export const authApi = {

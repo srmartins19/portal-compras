@@ -1,12 +1,14 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, Logger } from '@nestjs/common';
 import { prisma } from '@bidflow/database';
 import { EmailService } from '../common/services/email.service';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 import { CreateSupplierDto } from './dto/create-supplier.dto';
 import { UpdateSupplierDto } from './dto/update-supplier.dto';
 
 @Injectable()
 export class SuppliersService {
+  private readonly logger = new Logger(SuppliersService.name);
   constructor(private readonly email: EmailService) {}
 
   async findAll(companyId: string, q: { page?: number; limit?: number; search?: string; category?: string }) {
@@ -36,8 +38,11 @@ export class SuppliersService {
     if (exists) throw new ConflictException('Supplier with this email already exists');
 
     let passwordHash: string | undefined;
-    const tempPassword = 'supplier123!';
-    if (dto.enablePortal) passwordHash = await bcrypt.hash(tempPassword, 10);
+    let tempPassword: string | undefined;
+    if (dto.enablePortal) {
+      tempPassword = crypto.randomBytes(12).toString('base64url');
+      passwordHash = await bcrypt.hash(tempPassword, 10);
+    }
 
     const { passwordHash: _, ...supplier } = await prisma.supplier.create({
       data: {
@@ -56,11 +61,13 @@ export class SuppliersService {
     });
 
     // Send welcome email if portal enabled
-    if (dto.enablePortal) {
+    if (dto.enablePortal && tempPassword) {
       await this.email.sendWelcomeSupplier(dto.email, dto.name,
         `${process.env.SUPPLIER_PORTAL_URL || 'http://localhost:3001'}`,
         tempPassword,
-      ).catch(() => {});
+      ).catch((err: unknown) => {
+        this.logger.error(`Failed to send welcome email to supplier ${dto.email}: ${(err as Error).message}`);
+      });
     }
 
     return supplier;
@@ -87,7 +94,6 @@ export class SuppliersService {
     if (!s) throw new NotFoundException('Supplier not found');
     return prisma.supplier.update({ where: { id }, data: { isActive: false } });
   }
-}
 
   async updatePerformance(supplierId: string, dto: { deliveryScore: number; qualityScore: number; priceScore: number; serviceScore: number }) {
     const { deliveryScore, qualityScore, priceScore, serviceScore } = dto;
@@ -98,3 +104,4 @@ export class SuppliersService {
       create: { supplierId, deliveryScore, qualityScore, priceScore, serviceScore, overallScore: +overall.toFixed(2) },
     });
   }
+}

@@ -25,8 +25,8 @@ export function Th({ children, className }: { children?: React.ReactNode; classN
   );
 }
 
-export function Td({ children, className }: { children?: React.ReactNode; className?: string }) {
-  return <td className={cn('px-4 py-3 text-sm text-slate-700 border-b border-slate-100', className)}>{children}</td>;
+export function Td({ children, className, onClick }: { children?: React.ReactNode; className?: string; onClick?: (e: React.MouseEvent) => void }) {
+  return <td onClick={onClick} className={cn('px-4 py-3 text-sm text-slate-700 border-b border-slate-100', className)}>{children}</td>;
 }
 
 export function Tr({ children, onClick, className }: { children: React.ReactNode; onClick?: () => void; className?: string }) {

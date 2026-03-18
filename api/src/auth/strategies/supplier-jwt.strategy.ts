@@ -9,7 +9,7 @@ export class SupplierJwtStrategy extends PassportStrategy(Strategy, 'supplier-jw
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET || 'bidflow-secret-change-in-production',
+      secretOrKey: process.env.JWT_SECRET,
     });
   }
 

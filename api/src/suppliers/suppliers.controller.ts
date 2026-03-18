@@ -15,12 +15,14 @@ export class SuppliersController {
   constructor(private readonly svc: SuppliersService) {}
 
   @Get()
+  @Roles('ADMIN', 'BUYER', 'APPROVER')
   @ApiOperation({ summary: 'List suppliers' })
   findAll(@CompanyId() cId: string, @Query() q: { page?: string; limit?: string; search?: string; category?: string }) {
     return this.svc.findAll(cId, { ...q, page: Number(q.page)||1, limit: Number(q.limit)||20 });
   }
 
   @Get(':id')
+  @Roles('ADMIN', 'BUYER', 'APPROVER')
   @ApiOperation({ summary: 'Get supplier detail' })
   findOne(@CompanyId() cId: string, @Param('id') id: string) {
     return this.svc.findOne(cId, id);
@@ -54,5 +56,3 @@ export class SuppliersController {
     return this.svc.deactivate(cId, id);
   }
 }
-
-  // (append method — already imported above)
