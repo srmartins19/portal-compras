@@ -1,0 +1,22 @@
+# ── Build stage ──────────────────────────────────
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+COPY ../../packages ./packages
+RUN npm ci --workspace=@bidflow/database --workspace=@bidflow/types
+COPY . .
+RUN npm run build
+
+# ── Runtime stage ────────────────────────────────
+FROM node:20-alpine AS runner
+RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nestjs
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=builder --chown=nestjs:nodejs /app/dist ./dist
+COPY --from=builder --chown=nestjs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nestjs:nodejs /app/package.json ./
+USER nestjs
+EXPOSE 4000
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
+  CMD wget -qO- http://localhost:4000/api/v1/billing/plans || exit 1
+CMD ["node", "dist/main"]

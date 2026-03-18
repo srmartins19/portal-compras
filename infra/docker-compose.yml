@@ -1,0 +1,122 @@
+version: '3.9'
+
+services:
+
+  # ── PostgreSQL ──────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: bidflow_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:       bidflow_db
+      POSTGRES_USER:     bidflow
+      POSTGRES_PASSWORD: bidflow_pass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U bidflow -d bidflow_db']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bidflow_net
+
+  # ── Redis (session cache) ───────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: bidflow_redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    networks:
+      - bidflow_net
+
+  # ── NestJS API ──────────────────────────────────
+  api:
+    build:
+      context: ../apps/api
+      dockerfile: ../../infra/Dockerfile.api
+    container_name: bidflow_api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV:       production
+      PORT:           4000
+      DATABASE_URL:   postgresql://bidflow:bidflow_pass@postgres:5432/bidflow_db?schema=public
+      JWT_SECRET:     ${JWT_SECRET:-change-me-in-production}
+      JWT_EXPIRES_IN: 7d
+      CORS_ORIGINS:   http://localhost:3000,http://localhost:3001
+      REDIS_URL:      redis://redis:6379
+    ports:
+      - '4000:4000'
+    networks:
+      - bidflow_net
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -f http://localhost:4000/api/v1/billing/plans || exit 1']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ── Next.js Web (buyer portal) ──────────────────
+  web:
+    build:
+      context: ../apps/web
+      dockerfile: ../../infra/Dockerfile.web
+    container_name: bidflow_web
+    restart: unless-stopped
+    depends_on:
+      - api
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:4000/api/v1
+    ports:
+      - '3000:3000'
+    networks:
+      - bidflow_net
+
+  # ── Next.js Supplier Portal ─────────────────────
+  supplier-portal:
+    build:
+      context: ../apps/supplier-portal
+      dockerfile: ../../infra/Dockerfile.web
+    container_name: bidflow_supplier_portal
+    restart: unless-stopped
+    depends_on:
+      - api
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:4000/api/v1
+      PORT: 3001
+    ports:
+      - '3001:3001'
+    networks:
+      - bidflow_net
+
+  # ── Nginx reverse proxy ─────────────────────────
+  nginx:
+    image: nginx:alpine
+    container_name: bidflow_nginx
+    restart: unless-stopped
+    depends_on:
+      - api
+      - web
+      - supplier-portal
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - '80:80'
+      - '443:443'
+    networks:
+      - bidflow_net
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  bidflow_net:
+    driver: bridge
