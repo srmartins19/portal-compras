@@ -48,10 +48,15 @@ export const authApi = {
           email: 'francisco@casasbahia.com.br', 
           role: 'BUYER', 
           companyId: 'c1',
-          company: { id: 'c1', name: 'Casas Bahia' } 
+          company: { 
+            id: 'c1', 
+            name: 'Casas Bahia',
+            slug: 'casas-bahia', // ADICIONADO PARA O TYPESCRIPT
+            plan: 'ENTERPRISE'   // ADICIONADO PARA O TYPESCRIPT
+          } 
         } 
       } 
     }; 
-  }, // <--- Aqui estava o erro (tinha um ; em vez de ,)
+  },
   register: async (data?: any) => { await delay(); return { data: { success: true } }; }
 };
