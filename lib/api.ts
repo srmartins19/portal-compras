@@ -5,7 +5,6 @@ const delay = (ms = 400) => new Promise(res => setTimeout(res, ms));
 
 export const api = axios.create({ baseURL: '/' });
 
-// Exportação 1: RFQs
 export const rfqsApi = {
   list: async (params?: any) => { await delay(); return { data: { data: mockRfqs, total: mockRfqs.length, page: 1, totalPages: 1 } }; },
   get: async (id: string) => { await delay(); return { data: mockRfqs.find(r => r.id === id) || mockRfqs[0] }; },
@@ -16,7 +15,6 @@ export const rfqsApi = {
   selectWinner: async (id: string, supplierId: string) => { await delay(); return { data: { success: true } }; },
 };
 
-// Exportação 2: Fornecedores
 export const suppliersApi = {
   list: async (params?: any) => { await delay(); return { data: { data: mockSuppliers, total: mockSuppliers.length, page: 1, totalPages: 1 } }; },
   create: async (data: any) => { await delay(); return { data: { id: 'sup-new' } }; },
@@ -24,14 +22,12 @@ export const suppliersApi = {
   approve: async (id: string) => { await delay(); return { data: { success: true } }; },
 };
 
-// Exportação 3: Pedidos (Orders)
 export const ordersApi = {
   list: async (params?: any) => { await delay(); return { data: { data: mockOrders, total: mockOrders.length, page: 1, totalPages: 1 } }; },
   generateFromRfq: async (rfqId: string) => { await delay(); return { data: { id: 'ord-new' } }; },
   updateStatus: async (id: string, status: string) => { await delay(); return { data: { success: true } }; },
 };
 
-// Exportação 4: Analytics
 export const analyticsApi = {
   dashboard: async () => { await delay(); return { data: mockDashboard }; },
   priceHistory: async (itemId: string) => { await delay(); return { data: [] }; },
@@ -40,13 +36,12 @@ export const analyticsApi = {
   getSupplierParticipation: async () => { await delay(); return { data: [] }; },
 };
 
-// Exportação 5: Auth
 export const authApi = {
   login: async (data?: any) => { 
     await delay(); 
     return { 
       data: { 
-        accessToken: 'token-falso', 
+        accessToken: 'token-falso-para-demo', 
         user: { 
           id: 'u1', 
           firstName: 'Francisco', 
