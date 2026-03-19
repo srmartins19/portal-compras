@@ -57,14 +57,17 @@ export function OrdersTable({ orders, isLoading, queryKey }: OrdersTableProps) {
                 <Td className="font-semibold">{formatCurrency(o.totalAmount, o.currency)}</Td>
                 <Td><OrderStatusBadge status={o.status}/></Td>
                 <Td className="text-slate-500 text-xs">{o.deliveryDate ? formatDate(o.deliveryDate) : '—'}</Td>
-                <Td onClick={e => e.stopPropagation()}>
-                  {action && (
-                    <Button size="sm" variant="secondary"
-                      loading={statusMutation.isPending}
-                      onClick={() => statusMutation.mutate({ id: o.id, status: action.next })}>
-                      {action.label}
-                    </Button>
-                  )}
+                <Td>
+                  {/* CORREÇÃO: A div abaixo absorve o clique para não invadir a Tr */}
+                  <div onClick={e => e.stopPropagation()}>
+                    {action && (
+                      <Button size="sm" variant="secondary"
+                        loading={statusMutation.isPending}
+                        onClick={() => statusMutation.mutate({ id: o.id, status: action.next })}>
+                        {action.label}
+                      </Button>
+                    )}
+                  </div>
                 </Td>
                 <Td><ChevronRight size={15} className="text-slate-300"/></Td>
               </Tr>
