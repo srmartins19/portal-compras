@@ -1,7 +1,6 @@
 import { mockDashboard, mockMonthly, mockRanking, mockRfqs, mockSuppliers, mockOrders } from './mock-data';
 import axios from 'axios';
 
-// Simulador de carregamento (deixa a página carregar por meio segundo para parecer real)
 const delay = (ms = 400) => new Promise(res => setTimeout(res, ms));
 
 export const api = axios.create({ baseURL: '/' });
@@ -37,7 +36,6 @@ export const analyticsApi = {
 };
 
 export const authApi = {
-  // Login falso configurado para o seu perfil e respeitando a interface 'User'
   login: async (data?: any) => { 
     await delay(); 
     return { 
@@ -49,14 +47,11 @@ export const authApi = {
           lastName: 'Martins', 
           email: 'francisco@casasbahia.com.br', 
           role: 'BUYER', 
-          companyId: 'c1', // ADICIONADO: Campo obrigatório que estava faltando
-          company: { 
-            id: 'c1',
-            name: 'Casas Bahia' 
-          } 
+          companyId: 'c1',
+          company: { id: 'c1', name: 'Casas Bahia' } 
         } 
       } 
     }; 
-  },
-  register: async (data?: any) => { await delay(); return { data: { success: true } }; 
+  }, // <--- Aqui estava o erro (tinha um ; em vez de ,)
+  register: async (data?: any) => { await delay(); return { data: { success: true } }; }
 };
