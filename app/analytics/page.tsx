@@ -11,8 +11,7 @@ export default function AnalyticsPage() {
   const { data: kpis }     = useQuery({ queryKey: ['dashboard'], queryFn: () => analyticsApi.dashboard().then(r => r.data) });
   const { data: monthly }  = useQuery({ queryKey: ['monthly-12'], queryFn: () => analyticsApi.monthly(12).then(r => r.data) });
   const { data: ranking }  = useQuery({ queryKey: ['supplier-ranking'], queryFn: () => analyticsApi.ranking().then(r => r.data) });
-  const { data: participation } = useQuery({ queryKey: ['participation'], queryFn: () => analyticsApi.getSupplierParticipation?.() ?? Promise.resolve({ data: null }) });
-
+const { data: participation } = useQuery({ queryKey: ['participation'], queryFn: () => (analyticsApi as any).getSupplierParticipation?.() ?? Promise.resolve({ data: null }) });
   const radarData = ranking?.slice(0, 1).map((s: any) => [
     { subject: 'Price',    A: s.priceScore    },
     { subject: 'Delivery', A: s.deliveryScore },
