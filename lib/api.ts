@@ -6,38 +6,37 @@ const delay = (ms = 400) => new Promise(res => setTimeout(res, ms));
 export const api = axios.create({ baseURL: '/' });
 
 export const rfqsApi = {
-  list: async (p?: any) => { await delay(); return { data: { data: mockRfqs, total: 1, page: 1, totalPages: 1 } }; },
-  get: async (id: string) => { await delay(); return { data: (mockRfqs[0] as any) }; },
+  list: async (p?: any) => { await delay(); return { data: { data: mockRfqs, total: mockRfqs.length, page: 1, totalPages: 1 } }; },
+  get: async (id: string) => { await delay(); return { data: (mockRfqs.find(r => r.id === id) || mockRfqs[0]) as any }; },
   updateStatus: async (id: string, s: string) => { await delay(); return { data: { success: true } }; },
 };
 
 export const suppliersApi = {
-  list: async (p?: any) => { await delay(); return { data: { data: mockSuppliers, total: 1, page: 1, totalPages: 1 } }; },
-  get: async (id: string) => { await delay(); return { data: (mockSuppliers[0] as any) }; },
+  list: async (p?: any) => { await delay(); return { data: { data: mockSuppliers, total: mockSuppliers.length, page: 1, totalPages: 1 } }; },
+  get: async (id: string) => { await delay(); return { data: (mockSuppliers.find(s => s.id === id) || mockSuppliers[0]) as any }; },
 };
 
 export const ordersApi = {
-  list: async (p?: any) => { await delay(); return { data: { data: mockOrders, total: 1, page: 1, totalPages: 1 } }; },
-  get: async (id: string) => { await delay(); return { data: (mockOrders[0] as any) }; },
+  list: async (p?: any) => { await delay(); return { data: { data: mockOrders, total: mockOrders.length, page: 1, totalPages: 1 } }; },
+  get: async (id: string) => { await delay(); return { data: (mockOrders.find(o => o.id === id) || mockOrders[0]) as any }; },
 };
 
 export const analyticsApi = {
   dashboard: async () => { await delay(); return { data: mockDashboard }; },
-  monthly: async () => { await delay(); return { data: mockMonthly }; },
+  monthly: async (months?: number) => { await delay(); return { data: mockMonthly }; },
   ranking: async () => { await delay(); return { data: mockRanking }; },
 };
 
 export const authApi = {
-  login: async (d?: any) => { 
+  login: async (data?: any) => { 
     await delay(); 
-    // O 'as any' abaixo é o que resolve o erro do lastName, slug, plan, etc., de uma vez por todas
     return { 
       data: { 
-        accessToken: 'token-falso', 
+        accessToken: 'token-falso-estatico', 
         user: { 
           id: 'u1', 
           firstName: 'Francisco', 
-          lastName: 'Martins',
+          lastName: 'Martins', // O CAMPO QUE ESTÁ TRAVANDO O BUILD
           email: 'francisco@casasbahia.com.br', 
           role: 'BUYER', 
           companyId: 'c1',
@@ -47,9 +46,9 @@ export const authApi = {
             slug: 'casas-bahia', 
             plan: 'ENTERPRISE' 
           } 
-        } as any 
+        } 
       } 
     }; 
   },
-  register: async (d?: any) => { await delay(); return { data: { success: true } }; }
+  register: async (data?: any) => { await delay(); return { data: { success: true } }; }
 };
