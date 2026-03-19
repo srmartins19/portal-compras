@@ -37,7 +37,7 @@ export const analyticsApi = {
 };
 
 export const authApi = {
-  // Login falso configurado para o seu perfil (Casas Bahia)
+  // Login falso configurado para o seu perfil e respeitando a interface 'User'
   login: async (data?: any) => { 
     await delay(); 
     return { 
@@ -46,13 +46,17 @@ export const authApi = {
         user: { 
           id: 'u1', 
           firstName: 'Francisco', 
-          lastName: '', 
+          lastName: 'Martins', 
           email: 'francisco@casasbahia.com.br', 
           role: 'BUYER', 
-          company: { name: 'Casas Bahia' } 
+          companyId: 'c1', // ADICIONADO: Campo obrigatório que estava faltando
+          company: { 
+            id: 'c1',
+            name: 'Casas Bahia' 
+          } 
         } 
       } 
     }; 
   },
-  register: async (data?: any) => { await delay(); return { data: { success: true } }; },
+  register: async (data?: any) => { await delay(); return { data: { success: true } }; 
 };
