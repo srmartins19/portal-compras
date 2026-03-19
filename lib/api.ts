@@ -2,6 +2,7 @@ import { mockDashboard, mockMonthly, mockRanking, mockRfqs, mockSuppliers, mockO
 import axios from 'axios';
 
 const delay = (ms = 400) => new Promise(res => setTimeout(res, ms));
+
 export const api = axios.create({ baseURL: '/' });
 
 export const rfqsApi = {
@@ -29,9 +30,26 @@ export const analyticsApi = {
 export const authApi = {
   login: async (d?: any) => { 
     await delay(); 
-    return { data: { accessToken: 'tk', user: { 
-      id: 'u1', firstName: 'Francisco', email: 'f@casasbahia.com.br', role: 'BUYER', companyId: 'c1',
-      company: { id: 'c1', name: 'Casas Bahia', slug: 'cb', plan: 'ENT' } 
-    } } }; 
-  }
+    // O 'as any' abaixo é o que resolve o erro do lastName, slug, plan, etc., de uma vez por todas
+    return { 
+      data: { 
+        accessToken: 'token-falso', 
+        user: { 
+          id: 'u1', 
+          firstName: 'Francisco', 
+          lastName: 'Martins',
+          email: 'francisco@casasbahia.com.br', 
+          role: 'BUYER', 
+          companyId: 'c1',
+          company: { 
+            id: 'c1', 
+            name: 'Casas Bahia', 
+            slug: 'casas-bahia', 
+            plan: 'ENTERPRISE' 
+          } 
+        } as any 
+      } 
+    }; 
+  },
+  register: async (d?: any) => { await delay(); return { data: { success: true } }; }
 };
