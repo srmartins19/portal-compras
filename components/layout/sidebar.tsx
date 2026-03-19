@@ -11,27 +11,27 @@ const navGroups = [
     items: [
       { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
       { href: '/rfqs',      label: 'RFQs',       icon: FileText        },
-      { href: '/orders',    label: 'Orders',     icon: ShoppingCart    },
+      { href: '/orders',    label: 'Compras',     icon: ShoppingCart    },
     ],
   },
   {
     label: 'Master Data',
     items: [
-      { href: '/suppliers', label: 'Suppliers', icon: Users    },
-      { href: '/items',     label: 'Catalog',   icon: Package  },
+      { href: '/suppliers', label: 'Compradores', icon: Users    },
+      { href: '/items',     label: 'Catalogo',   icon: Package  },
     ],
   },
   {
     label: 'Insights',
     items: [
-      { href: '/analytics', label: 'Analytics', icon: BarChart2 },
+      { href: '/analytics', label: 'Analiticos', icon: BarChart2 },
     ],
   },
   {
     label: 'Account',
     items: [
       { href: '/billing',  label: 'Billing',  icon: Zap      },
-      { href: '/settings', label: 'Settings', icon: Settings },
+      { href: '/settings', label: 'Configurações', icon: Settings },
     ],
   },
 ];
