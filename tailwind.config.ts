@@ -6,6 +6,17 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        border: 'hsl(var(--border))',
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
+        primary: {
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))',
+        },
+        muted: {
+          DEFAULT: 'hsl(var(--muted))',
+          foreground: 'hsl(var(--muted-foreground))',
+        },
         navy: { DEFAULT: '#1e3a5f', light: '#e8eef7', mid: '#2563a8' },
         brand: { DEFAULT: '#1e3a5f', foreground: '#ffffff' },
       },
