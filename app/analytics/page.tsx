@@ -9,7 +9,7 @@ import { Trophy } from 'lucide-react';
 
 export default function AnalyticsPage() {
   const { data: kpis }     = useQuery({ queryKey: ['dashboard'], queryFn: () => analyticsApi.dashboard().then(r => r.data) });
-  const { data: monthly }  = useQuery({ queryKey: ['monthly-12'], queryFn: () => analyticsApi.monthly(12).then(r => r.data) });
+  const { data: monthly }  = useQuery({ queryKey: ['monthly'], queryFn: () => analyticsApi.monthly().then(r => r.data) });
   const { data: ranking }  = useQuery({ queryKey: ['supplier-ranking'], queryFn: () => analyticsApi.ranking().then(r => r.data) });
   const { data: participation } = useQuery({ queryKey: ['participation'], queryFn: () => (analyticsApi as any).getSupplierParticipation?.() ?? Promise.resolve({ data: null }) });
 
