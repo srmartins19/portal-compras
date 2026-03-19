@@ -1,65 +1,51 @@
-import axios from 'axios';
+import { mockDashboard, mockMonthly, mockRanking, mockRfqs, mockSuppliers, mockOrders } from './mock-data';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api/v1';
+// Simulador de carregamento (deixa a tela carregar por meio segundo para parecer real)
+const delay = (ms = 400) => new Promise(res => setTimeout(res, ms));
 
-export const api = axios.create({
-  baseURL: API_URL,
-  headers: { 'Content-Type': 'application/json' },
-});
-
-// Attach JWT token from localStorage
-api.interceptors.request.use((config) => {
-  if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('bidflow_token');
-    if (token) config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
-
-// Handle 401 — redirect to login
-api.interceptors.response.use(
-  (res) => res,
-  (error) => {
-    if (error.response?.status === 401 && typeof window !== 'undefined') {
-      localStorage.removeItem('bidflow_token');
-      window.location.href = '/auth/login';
-    }
-    return Promise.reject(error);
-  },
-);
-
-// Typed API helpers
 export const rfqsApi = {
-  list:          (params?: object) => api.get('/rfqs', { params }),
-  get:           (id: string)      => api.get(`/rfqs/${id}`),
-  create:        (data: object)    => api.post('/rfqs', data),
-  updateStatus:  (id: string, status: string) => api.patch(`/rfqs/${id}/status`, { status }),
-  invite:        (id: string, supplierIds: string[]) => api.post(`/rfqs/${id}/invite-suppliers`, { supplierIds }),
-  comparison:    (id: string)      => api.get(`/rfqs/${id}/comparison`),
-  selectWinner:  (id: string, supplierId: string) => api.post(`/rfqs/${id}/select-winner`, { supplierId }),
+  list: async () => { await delay(); return { data: { data: mockRfqs, total: mockRfqs.length, page: 1, totalPages: 1 } }; },
+  get: async (id: string) => { await delay(); return { data: mockRfqs.find(r => r.id === id) || mockRfqs[0] }; },
+  create: async (data: any) => { await delay(); return { data: { id: 'rfq-new' } }; },
+  updateStatus: async () => { await delay(); return { data: { success: true } }; },
+  invite: async () => { await delay(); return { data: { success: true } }; },
+  comparison: async (id: string) => { await delay(); return { data: [] }; },
+  selectWinner: async () => { await delay(); return { data: { success: true } }; },
 };
 
 export const suppliersApi = {
-  list:    (params?: object) => api.get('/suppliers', { params }),
-  create:  (data: object)    => api.post('/suppliers', data),
-  approve: (id: string)      => api.patch(`/suppliers/${id}/approve`),
+  list: async () => { await delay(); return { data: { data: mockSuppliers, total: mockSuppliers.length, page: 1, totalPages: 1 } }; },
+  create: async (data: any) => { await delay(); return { data: { id: 'sup-new' } }; },
+  approve: async () => { await delay(); return { data: { success: true } }; },
 };
 
 export const ordersApi = {
-  list:           (params?: object) => api.get('/orders', { params }),
-  generateFromRfq:(rfqId: string)   => api.post(`/orders/generate-from-rfq/${rfqId}`),
-  updateStatus:   (id: string, status: string) => api.patch(`/orders/${id}/status`, { status }),
+  list: async () => { await delay(); return { data: { data: mockOrders, total: mockOrders.length, page: 1, totalPages: 1 } }; },
+  generateFromRfq: async () => { await delay(); return { data: { id: 'ord-new' } }; },
+  updateStatus: async () => { await delay(); return { data: { success: true } }; },
 };
 
 export const analyticsApi = {
-  dashboard:                ()                => api.get('/analytics/dashboard'),
-  priceHistory:             (itemId: string)  => api.get(`/analytics/item-price-history/${itemId}`),
-  ranking:                  ()                => api.get('/analytics/supplier-ranking'),
-  monthly:                  (months?: number) => api.get('/analytics/monthly', { params: { months } }),
-  getSupplierParticipation: ()                => api.get('/analytics/supplier-participation'),
+  dashboard: async () => { await delay(); return { data: mockDashboard }; },
+  priceHistory: async () => { await delay(); return { data: [] }; },
+  ranking: async () => { await delay(); return { data: mockRanking }; },
+  monthly: async () => { await delay(); return { data: mockMonthly }; },
+  getSupplierParticipation: async () => { await delay(); return { data: [] }; },
 };
 
 export const authApi = {
-  login:    (data: { email: string; password: string }) => api.post('/auth/login', data),
-  register: (data: object) => api.post('/auth/register', data),
+  // Login falso: Aceita qualquer email/senha e te loga no sistema
+  login: async () => { 
+    await delay(); 
+    return { 
+      data: { 
+        accessToken: 'token-falso-para-demo', 
+        user: { id: 'u1', firstName: 'Francisco', lastName: 'Martins', email: 'francisco@empresa.com.br', role: 'ADMIN', company: { name: 'Casas Bahia' } } 
+      } 
+    }; 
+  },
+  register: async () => { await delay(); return { data: { success: true } }; },
 };
+
+import axios from 'axios';
+export const api = axios.create({ baseURL: '/' });
